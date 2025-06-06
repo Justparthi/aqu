@@ -1,0 +1,17 @@
+
+.back-button {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px;
+}
+
+.back-button .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.back-button .text {
+  font-size: 15px;
+}

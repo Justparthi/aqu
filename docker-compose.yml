@@ -1,0 +1,65 @@
+services:
+  cloud-services-frontend:
+    container_name: frontend
+    image: cloud-services-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - cloud-services-network
+    restart: on-failure
+    volumes:
+      - nginx_volume:/etc/nginx/
+      - letsencrypt_volume:/etc/letsencrypt/
+  
+  cloud-services-backend:
+    container_name: backend
+    image: cloud-services-backend
+    ports:
+      - "3000:3000"
+    networks:
+      - cloud-services-network
+    restart: on-failure
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: on-failure
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_volume:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=<set_your_own_username>
+      - MONGO_INITDB_ROOT_PASSWORD=<set_your_own_password>
+    networks:
+      - cloud-services-db-network
+  
+  redis:
+    container_name: redis
+    image: redis
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 12
+    ports:
+      - "6379:6379"
+    command: ["redis-server"]
+    volumes:
+      - redis_volume:/data
+    restart: on-failure
+    networks:
+      - cloud-services-network
+
+networks:
+  cloud-services-network:
+    driver: bridge
+  cloud-services-db-network:
+    external: true
+
+volumes:
+  mongo_volume:
+  redis_volume:
+  nginx_volume:
+  letsencrypt_volume:

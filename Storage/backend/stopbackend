@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+docker-compose down
+clear
+docker system prune
+clear
+docker ps -a
+# Delete all volumes: docker volume rm -f $(docker volume ls -q)
